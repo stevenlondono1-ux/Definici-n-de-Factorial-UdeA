@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title> Definición de Factorial</title>
+
+<!-- Librería jsPDF para PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body{
+font-family: Times New Roman;
+background: linear-gradient(to right,#0f2027,#203a43,#2c5364);
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.container{
+background:white;
+color:black;
+max-width:1000px;
+margin:auto;
+padding:20px;
+border-radius:20px;
+box-shadow:0 15px 35px rgba(0,0,0,0.4);
+}
+
+button{
+padding:8px 15px;
+margin:5px;
+border:none;
+border-radius:10px;
+background:#ff9800;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{transform:scale(1.1);}
+
+input{
+padding:6px;
+width:120px;
+text-align:center;
+}
+
+.progress-container{
+width:100%;
+background:#ddd;
+border-radius:20px;
+margin:15px 0;
+}
+
+.progress-bar{
+width:0%;
+height:20px;
+background:#4caf50;
+border-radius:20px;
+transition:0.5s;
+}
+
+.correcto{color:green;font-weight:bold;}
+.incorrecto{color:red;font-weight:bold;}
+
+#avatar{
+width:150px;
+transition:0.3s;
+}
+
+.hablando{
+animation: hablar 0.5s infinite alternate;
+}
+
+@keyframes hablar{
+from{transform:scale(1);}
+to{transform:scale(1.1);}
+}
+
+#final{
+display:none;
+margin-top:20px;
+background:#fff3cd;
+padding:20px;
+border-radius:15px;
+}
+
+#ranking{
+margin-top:20px;
+background:#e0f7fa;
+padding:15px;
+border-radius:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- SESION 1 -->
+<div id="sesion1">
+<h1>🔢 FACTORIAL 🔢</h1>
+
+<div style="text-align:center; margin-bottom:30px;">
+  <img src="https://raw.githubusercontent.com/stevenlondono1-ux/Imagenes/refs/heads/main/0158b827-5974-419b-8ccc-5722135b2f44.png"
+       style="width:100%; max-width:1000px; border-radius:20px; box-shadow:0px 10px 25px rgba(0,0,0,0.2);">
+</div>
+
+<button onclick="cambiarSesion(2)">Comenzar ➡</button>
+</div>
+
+
+<!-- SESION 2 -->
+<div id="sesion2" style="display:none;">
+<h2>📖 Definiciones</h2>
+
+<h3>📘 Definición de Factorial</h3>
+<p>
+Esta operación matemática tiene un amplio uso en diferentes áreas, especialmente en probabilidad. 
+Se define la factorial de un número, denotado como n!, como el producto de todos los enteros positivos menores o iguales a n. 
+El factorial de un número es la multiplicación de todos los enteros positivos desde uno hasta el propio número. 
+Así, para obtener 4!, se multiplica el número por sus predecesores hasta llegar a uno: 
+<b>4! = 4 ⋅ 3 ⋅ 2 ⋅ 1 = 24.</b>
+</p>
+
+<audio controls id="audio1" onplay="hablar()" onpause="callar()" onended="callar()">
+  <source src="https://cdn.jsdelivr.net/gh/stevenlondono1-ux/factorial-game-audios/definicion.mp3" type="audio/mpeg">
+</audio>
+
+<h3>❗ Representación del Factorial</h3>
+<p>
+El factorial se representa con un signo de exclamación: !  
+Se escribe inmediatamente después del número.  
+Por ejemplo: 5!
+</p>
+
+<audio controls id="audio2" onplay="hablar()" onpause="callar()" onended="callar()">
+  <source src="https://cdn.jsdelivr.net/gh/stevenlondono1-ux/Representaci-n-F/Representaci%C3%B3n%20(mp3cut.net).mp3" type="audio/mpeg">
+</audio>
+
+<h3>🟢 0 Factorial</h3>
+<p>
+0! es igual a 1 por definición matemática, porque existe solamente una forma de no ordenar nada.
+</p>
+
+<audio controls id="audio3" onplay="hablar()" onpause="callar()" onended="callar()">
+  <source src="https://cdn.jsdelivr.net/gh/stevenlondono1-ux/Cero-Factorial/Cero%20Factorial%20(mp3cut.net).mp3" type="audio/mpeg">
+</audio>
+
+<label>Velocidad:</label>
+<select onchange="cambiarVelocidad(this.value)">
+<option value="1">1x</option>
+<option value="1.25">1.25x</option>
+<option value="1.5">1.5x</option>
+<option value="0.75">0.75x</option>
+</select>
+
+<br><br>
+<button onclick="cambiarSesion(1)">⬅ Volver</button>
+<button onclick="cambiarSesion(3)">Siguiente ➡</button>
+<button onclick="cambiarSesion(1)">🏠 Ir al Inicio</button>
+</div>
+
+
+<!-- SESION 3 -->
+<div id="sesion3" style="display:none;">
+<h2>🧮 Calculadora</h2>
+<input type="number" id="numero">
+<button onclick="calcular()">Calcular</button>
+<p id="resultado"></p>
+
+<button onclick="cambiarSesion(2)">⬅ Anterior</button>
+<button onclick="cambiarSesion(4)">Siguiente ➡</button>
+<button onclick="cambiarSesion(1)">🏠 Ir al Inicio</button>
+</div>
+
+
+<!-- SESION 4 -->
+<div id="sesion4" style="display:none;">
+<h2>🏆 Nivel: <span id="nivel">Básico</span></h2>
+
+<div id="ejercicios"></div>
+
+<div class="progress-container">
+<div class="progress-bar" id="barra"></div>
+</div>
+
+<p>Puntos: <span id="puntos">0</span>/12</p>
+
+<div id="final" style="margin-top:20px; background:#fff3cd; padding:20px; border-radius:15px;">
+<h2>🎓 Certificado</h2>
+<button onclick="descargarCertificadoPDF()">Descargar Certificado</button>
+</div>
+
+<div id="ranking">
+<h3>🏅 Ranking</h3>
+<ul id="listaRanking"></ul>
+</div>
+
+<button onclick="reiniciarJuego()">🔄 Reiniciar Juego</button>
+<button onclick="cambiarSesion(3)">⬅ Anterior</button>
+<button onclick="cambiarSesion(1)">🏠 Ir al Inicio</button>
+</div>
+
+</div>
+
+<audio id="sonidoCorrecto">
+<source src="https://www.soundjay.com/buttons/sounds/button-3.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let puntos=0;
+let total=12;
+let intervalo;
+
+let preguntas=[
+{texto:"1) ¿Cuánto es 5! ?",respuesta:120},
+{texto:"2) ¿Cuánto es 7! ?",respuesta:5040},
+{texto:"3) ¿Cuánto es 1! ?",respuesta:1},
+{texto:"4) Completa: 4! = 4 × 3 × 2 × __ ?",respuesta:1},
+{texto:"5) ¿Cuánto es 8! ?",respuesta:40320},
+{texto:"6) Si 3 personas se ordenan en fila, ¿cuántas formas hay?",respuesta:6},
+{texto:"7) ¿Cuántas formas hay de ordenar 6 libros diferentes?",respuesta:720},
+{texto:"8) En una carrera con 5 corredores, ¿cuántos posibles órdenes de llegada existen?",respuesta:120},
+{texto:"9) ¿Cuánto es 2! ?",respuesta:2},
+{texto:"10) ¿Cuánto es 9! ?",respuesta:362880},
+{texto:"11) ¿Cuántas maneras hay de organizar 4 cartas distintas?",respuesta:24},
+{texto:"12) ¿Cuánto es 0! ?",respuesta:1}
+];
+
+total = preguntas.length;
+
+function cambiarSesion(numero){
+document.getElementById("sesion1").style.display="none";
+document.getElementById("sesion2").style.display="none";
+document.getElementById("sesion3").style.display="none";
+document.getElementById("sesion4").style.display="none";
+document.getElementById("sesion"+numero).style.display="block";
+}
+
+function hablar(){document.getElementById("avatar").classList.add("hablando");}
+function callar(){document.getElementById("avatar").classList.remove("hablando");}
+
+function cargarEjercicios(){
+let cont=document.getElementById("ejercicios");
+preguntas.forEach((p,i)=>{
+cont.innerHTML+=`
+<p>${p.texto}</p>
+<input type="number" id="r${i}" 
+onkeypress="if(event.key==='Enter'){verificar(${p.respuesta},'r${i}','m${i}')}">
+<button onclick="verificar(${p.respuesta},'r${i}','m${i}')">Responder</button>
+<p id="m${i}"></p>
+`;
+});
+}
+
+function verificar(correcta, idInput, idMensaje){
+    let valor = parseInt(document.getElementById(idInput).value);
+    let mensaje = document.getElementById(idMensaje);
+    if(valor === correcta){
+        if(!mensaje.classList.contains("correcto")){
+            puntos++;
+            actualizarBarra();
+            document.getElementById("sonidoCorrecto").play();
+        }
+        mensaje.innerHTML = "🎉 Correcto";
+        mensaje.className = "correcto";
+    } else {
+        mensaje.innerHTML = "❌ Incorrecto";
+        mensaje.className = "incorrecto";
+    }
+
+    // Revisar si todas las preguntas están respondidas
+    let todasRespondidas = true;
+    preguntas.forEach((p,i)=>{
+        let input = document.getElementById("r"+i);
+        if(input.value === ""){
+            todasRespondidas = false;
+        }
+    });
+
+    if(todasRespondidas){
+        document.getElementById("final").style.display = "block";
+    }
+}
+
+function actualizarBarra(){
+document.getElementById("puntos").innerText=puntos;
+let progreso=(puntos/total)*100;
+document.getElementById("barra").style.width=progreso+"%";
+
+if(puntos>=4) document.getElementById("nivel").innerText="Básico";
+if(puntos>=8) document.getElementById("nivel").innerText="Sobresaliente";
+}
+
+function calcular(){
+let n=parseInt(document.getElementById("numero").value);
+let res=document.getElementById("resultado");
+
+if(isNaN(n)||n<0){res.innerHTML="Número inválido";return;}
+if(n===0){res.innerHTML="0! = 1";return;}
+
+let resultado=1;
+let proceso="";
+for(let i=n;i>=1;i--){
+resultado*=i;
+proceso+=i+(i>1?" × ":"");
+}
+res.innerHTML=n+"! = "+proceso+" = "+resultado;
+}
+
+function cambiarVelocidad(v){
+document.getElementById("audio1").playbackRate=v;
+document.getElementById("audio2").playbackRate=v;
+document.getElementById("audio3").playbackRate=v;
+}
+
+function guardarRanking(){
+let nombre=prompt("Ingresa tu nombre:");
+if(!nombre) return;
+let ranking=JSON.parse(localStorage.getItem("ranking"))||[];
+ranking.push({nombre:nombre,puntos:puntos});
+ranking.sort((a,b)=>b.puntos-a.puntos);
+localStorage.setItem("ranking",JSON.stringify(ranking));
+mostrarRanking();
+}
+
+function mostrarRanking(){
+let lista=document.getElementById("listaRanking");
+lista.innerHTML="";
+let ranking=JSON.parse(localStorage.getItem("ranking"))||[];
+ranking.slice(0,5).forEach(r=>{
+lista.innerHTML+=`<li>${r.nombre} - ${r.puntos} puntos</li>`;
+});
+}
+
+function reiniciarJuego(){
+puntos = 0;
+document.getElementById("puntos").innerText = 0;
+document.getElementById("nivel").innerText = "Básico";
+document.getElementById("barra").style.width = "0%";
+document.getElementById("final").style.display = "none";
+preguntas.forEach((p,i)=>{
+document.getElementById("r"+i).value = "";
+document.getElementById("m"+i).innerHTML = "";
+});
+}
+
+// Función PDF bonito
+function descargarCertificadoPDF(){
+    const { jsPDF } = window.jspdf;
+
+    let nombre = prompt("¡Felicidades! Ingresa tu nombre para generar el certificado:");
+    if(!nombre) return;
+
+    let fecha = new Date().toLocaleDateString();
+    let nivel = document.getElementById("nivel").innerText;
+    let puntaje = puntos;
+    let totalPreguntas = total;
+
+    let doc = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: [800, 600]
+    });
+
+    // Fondo color
+    doc.setFillColor(255, 250, 240); // color crema
+    doc.rect(0, 0, 800, 600, 'F');
+
+    // Borde decorativo
+    doc.setDrawColor(255, 153, 0);
+    doc.setLineWidth(4);
+    doc.rect(20, 20, 760, 560);
+
+    // Título
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(36);
+    doc.setTextColor(60, 60, 60);
+    doc.text("CERTIFICADO DE LOGRO", 400, 100, {align: "center"});
+
+    // Nombre
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(28);
+    doc.text(`Nombre: ${nombre}`, 400, 180, {align: "center"});
+
+    // Puntaje y nivel
+    doc.text(`Puntaje: ${puntaje} de ${totalPreguntas}`, 400, 230, {align: "center"});
+    doc.text(`Nivel alcanzado: ${nivel}`, 400, 280, {align: "center"});
+    doc.text(`Fecha: ${fecha}`, 400, 330, {align: "center"});
+
+    // Mensaje final
+    doc.setFontSize(22);
+    doc.setTextColor(80, 80, 80);
+    doc.text("¡Felicitaciones por completar el juego del Factorial!", 400, 400, {align: "center"});
+
+    // Guardar PDF
+    doc.save("Certificado_Factorial.pdf");
+}
+
+cargarEjercicios();
+mostrarRanking();
+
+</script>
+
+</body>
+</html>
