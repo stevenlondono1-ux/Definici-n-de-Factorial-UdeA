@@ -2,118 +2,507 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title> Definición de Factorial</title>
+<title>Módulo Para Orientar Probabilidad - Factorial</title>
 
 <!-- Librería jsPDF para PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<!-- Font Awesome para iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-body{
-font-family: Times New Roman;
-background: linear-gradient(to right,#0f2027,#203a43,#2c5364);
-color:white;
-text-align:center;
-padding:20px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.container{
-background:white;
-color:black;
-max-width:1000px;
-margin:auto;
-padding:20px;
-border-radius:20px;
-box-shadow:0 15px 35px rgba(0,0,0,0.4);
+body {
+  font-family: 'Poppins', 'Times New Roman', serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6b8cff 100%);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  min-height: 100vh;
+  position: relative;
 }
 
-button{
-padding:8px 15px;
-margin:5px;
-border:none;
-border-radius:10px;
-background:#ff9800;
-color:white;
-cursor:pointer;
-transition:0.3s;
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-button:hover{transform:scale(1.1);}
-
-input{
-padding:6px;
-width:120px;
-text-align:center;
+/* Escudo de la UdeA - VERSIÓN MEJORADA */
+.escudo-udea {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 110px;
+  height: 110px;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Escudo-UdeA.svg/500px-Escudo-UdeA.svg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 9999;
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7));
+  animation: escudoBrillo 3s ease-in-out infinite;
+  background-color: white;
+  border-radius: 50%;
+  padding: 12px;
+  box-shadow: 
+    0 0 0 3px rgba(255, 215, 0, 0.5),
+    0 0 0 6px rgba(255, 255, 255, 0.3),
+    0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
 }
 
-.progress-container{
-width:100%;
-background:#ddd;
-border-radius:20px;
-margin:15px 0;
+.escudo-udea:hover {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 0 25px gold);
+  box-shadow: 
+    0 0 0 4px gold,
+    0 0 0 8px rgba(255, 255, 255, 0.5),
+    0 15px 35px rgba(0, 0, 0, 0.6);
 }
 
-.progress-bar{
-width:0%;
-height:20px;
-background:#4caf50;
-border-radius:20px;
-transition:0.5s;
+@keyframes escudoBrillo {
+  0%, 100% { 
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7));
+    transform: scale(1);
+  }
+  50% { 
+    filter: drop-shadow(0 0 30px gold);
+    transform: scale(1.05);
+  }
 }
 
-.correcto{color:green;font-weight:bold;}
-.incorrecto{color:red;font-weight:bold;}
-
-#avatar{
-width:150px;
-transition:0.3s;
+/* Efecto de partículas flotantes */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.hablando{
-animation: hablar 0.5s infinite alternate;
+.particle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: particleFloat 8s infinite;
 }
 
-@keyframes hablar{
-from{transform:scale(1);}
-to{transform:scale(1.1);}
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(100px) rotate(720deg);
+    opacity: 0;
+  }
 }
 
-#final{
-display:none;
-margin-top:20px;
-background:#fff3cd;
-padding:20px;
-border-radius:15px;
+.container {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2c3e50;
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  z-index: 100;
+  animation: slideUp 1s ease;
 }
 
-#ranking{
-margin-top:20px;
-background:#e0f7fa;
-padding:15px;
-border-radius:15px;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Títulos con animación */
+h1 {
+  font-size: 2.8em;
+  background: linear-gradient(135deg, #667eea, #764ba2, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  animation: titlePulse 2s infinite;
+  position: relative;
+  display: inline-block;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ff9800, transparent);
+  animation: lineGrow 3s infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes lineGrow {
+  0%, 100% { width: 0; opacity: 0; }
+  50% { width: 100%; opacity: 1; }
+}
+
+h2 {
+  font-size: 2em;
+  color: #667eea;
+  margin: 15px 0;
+  animation: slideIn 0.8s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Botones con animaciones */
+button {
+  padding: 12px 30px;
+  margin: 8px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #764ba2, #667eea);
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* Inputs con animación */
+input {
+  padding: 12px 20px;
+  width: 180px;
+  text-align: center;
+  border: 2px solid #e0e0e0;
+  border-radius: 50px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  margin: 5px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+  transform: scale(1.02);
+  width: 200px;
+}
+
+/* Barra de progreso animada */
+.progress-container {
+  width: 100%;
+  background: #f0f0f0;
+  border-radius: 50px;
+  margin: 20px 0;
+  height: 30px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  border-radius: 50px;
+  transition: width 0.5s ease;
+  position: relative;
+  animation: progressPulse 2s infinite;
+}
+
+@keyframes progressPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.9; }
+}
+
+/* Avatar con animación mejorada */
+#avatar {
+  width: 150px;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.hablando {
+  animation: speak 0.8s infinite;
+  filter: drop-shadow(0 0 20px #ff9800);
+}
+
+@keyframes speak {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-2deg); }
+  75% { transform: scale(1.1) rotate(2deg); }
+}
+
+/* Tarjetas animadas */
+#final {
+  background: linear-gradient(135deg, #fff3cd, #ffe69c);
+  padding: 25px;
+  border-radius: 20px;
+  margin: 20px 0;
+  animation: cardFloat 3s infinite;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Ranking reposicionado - AHORA DEBAJO Y CENTRADO */
+#ranking {
+  background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+  padding: 25px;
+  border-radius: 20px;
+  margin: 20px auto;
+  animation: cardFloat 3s infinite;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+#ranking h3 {
+  font-size: 1.8em;
+  color: #006064;
+  margin-bottom: 15px;
+}
+
+#listaRanking {
+  list-style: none;
+  padding: 0;
+}
+
+#listaRanking li {
+  padding: 10px;
+  margin: 5px 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  color: #00796b;
+  animation: rankingItem 0.5s ease;
+  animation-fill-mode: both;
+}
+
+#listaRanking li:nth-child(1) { animation-delay: 0.1s; background: linear-gradient(135deg, #ffd700, #ffb300); color: #fff; }
+#listaRanking li:nth-child(2) { animation-delay: 0.2s; background: linear-gradient(135deg, #c0c0c0, #a0a0a0); color: #fff; }
+#listaRanking li:nth-child(3) { animation-delay: 0.3s; background: linear-gradient(135deg, #cd7f32, #b06d1f); color: #fff; }
+
+@keyframes rankingItem {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Ejercicios con animación */
+#ejercicios {
+  display: grid;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  margin: 20px 0;
+}
+
+#ejercicios > * {
+  animation: fadeIn 0.5s ease;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Aplicar delay a cada elemento */
+#ejercicios p:nth-child(1) { animation-delay: 0.1s; }
+#ejercicios input:nth-child(2) { animation-delay: 0.2s; }
+#ejercicios button:nth-child(3) { animation-delay: 0.3s; }
+#ejercicios p:nth-child(4) { animation-delay: 0.4s; }
+
+/* Audio player con estilo */
+audio {
+  border-radius: 50px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin: 15px 0;
+  width: 100%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Select con animación */
+select {
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: 2px solid #667eea;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 10px;
+  transition: all 0.3s ease;
+}
+
+select:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Texto de respuestas */
+.correcto {
+  color: #00b09b;
+  font-weight: bold;
+  animation: correctPulse 1s infinite;
+}
+
+.incorrecto {
+  color: #ff6b6b;
+  font-weight: bold;
+  animation: shake 0.5s;
+}
+
+@keyframes correctPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 2em;
+  }
+  
+  .escudo-udea {
+    width: 70px;
+    height: 70px;
+    padding: 8px;
+  }
+  
+  button {
+    padding: 10px 20px;
+  }
+  
+  #ranking {
+    max-width: 100%;
+  }
 }
 </style>
 </head>
-
 <body>
+
+<!-- Partículas flotantes -->
+<div class="particles" id="particles"></div>
+
+<!-- Escudo mejorado con nuevo estilo -->
+<div class="escudo-udea"></div>
 
 <div class="container">
 
 <!-- SESION 1 -->
 <div id="sesion1">
-<h1>🔢 FACTORIAL 🔢</h1>
+<h1><i class="fas fa-calculator"></i> Módulo Para Orientar Probabilidad <i class="fas fa-dice"></i></h1>
+<h2>Factorial de un número</h2>
 
 <div style="text-align:center; margin-bottom:30px;">
   <img src="https://raw.githubusercontent.com/stevenlondono1-ux/Imagenes/refs/heads/main/0158b827-5974-419b-8ccc-5722135b2f44.png"
-       style="width:100%; max-width:1000px; border-radius:20px; box-shadow:0px 10px 25px rgba(0,0,0,0.2);">
+       style="width:100%; max-width:1000px; border-radius:30px; box-shadow:0 15px 30px rgba(0,0,0,0.3); animation: pulse 3s infinite;">
 </div>
 
-<button onclick="cambiarSesion(2)">Comenzar ➡</button>
+<button onclick="cambiarSesion(2)"><i class="fas fa-play"></i> Comenzar ➡</button>
 </div>
 
 
 <!-- SESION 2 -->
 <div id="sesion2" style="display:none;">
-<h2>Definiciones</h2>
+<h2><i class="fas fa-book-open"></i> Definiciones</h2>
 
 <h3>Definición de Factorial</h3>
 <p>
@@ -148,7 +537,7 @@ Por ejemplo: 5!
   <source src="https://cdn.jsdelivr.net/gh/stevenlondono1-ux/Cero-Factorial/Cero%20Factorial%20(mp3cut.net).mp3" type="audio/mpeg">
 </audio>
 
-<label>Velocidad:</label>
+<label><i class="fas fa-tachometer-alt"></i> Velocidad:</label>
 <select onchange="cambiarVelocidad(this.value)">
 <option value="1">1x</option>
 <option value="1.25">1.25x</option>
@@ -157,28 +546,28 @@ Por ejemplo: 5!
 </select>
 
 <br><br>
-<button onclick="cambiarSesion(1)">⬅ Volver</button>
-<button onclick="cambiarSesion(3)">Siguiente ➡</button>
-<button onclick="cambiarSesion(1)">🏠 Ir al Inicio</button>
+<button onclick="cambiarSesion(1)"><i class="fas fa-arrow-left"></i> Volver</button>
+<button onclick="cambiarSesion(3)">Siguiente <i class="fas fa-arrow-right"></i></button>
+<button onclick="cambiarSesion(1)"><i class="fas fa-home"></i> Ir al Inicio</button>
 </div>
 
 
 <!-- SESION 3 -->
 <div id="sesion3" style="display:none;">
-<h2>🧮 Calculadora</h2>
-<input type="number" id="numero">
-<button onclick="calcular()">Calcular</button>
-<p id="resultado"></p>
+<h2><i class="fas fa-calculator"></i> Calculadora</h2>
+<input type="number" id="numero" placeholder="Ingresa un número">
+<button onclick="calcular()"><i class="fas fa-equals"></i> Calcular</button>
+<p id="resultado" style="font-size: 1.2em; margin-top: 15px;"></p>
 
-<button onclick="cambiarSesion(2)">⬅ Anterior</button>
-<button onclick="cambiarSesion(4)">Siguiente ➡</button>
-<button onclick="cambiarSesion(1)">🏠 Ir al Inicio</button>
+<button onclick="cambiarSesion(2)"><i class="fas fa-arrow-left"></i> Anterior</button>
+<button onclick="cambiarSesion(4)">Siguiente <i class="fas fa-arrow-right"></i></button>
+<button onclick="cambiarSesion(1)"><i class="fas fa-home"></i> Ir al Inicio</button>
 </div>
 
 
 <!-- SESION 4 -->
 <div id="sesion4" style="display:none;">
-<h2>🏆 Nivel: <span id="nivel">Básico</span></h2>
+<h2><i class="fas fa-trophy"></i> Nivel: <span id="nivel">Básico</span></h2>
 
 <div id="ejercicios"></div>
 
@@ -186,21 +575,22 @@ Por ejemplo: 5!
 <div class="progress-bar" id="barra"></div>
 </div>
 
-<p>Puntos: <span id="puntos">0</span>/12</p>
+<p><i class="fas fa-star"></i> Puntos: <span id="puntos">0</span>/12</p>
 
-<div id="final" style="margin-top:20px; background:#fff3cd; padding:20px; border-radius:15px;">
-<h2>🎓 Certificado</h2>
-<button onclick="descargarCertificadoPDF()">Descargar Certificado</button>
+<div id="final" style="margin-top:20px;">
+<h2><i class="fas fa-certificate"></i> Certificado</h2>
+<button onclick="descargarCertificadoPDF()"><i class="fas fa-download"></i> Descargar Certificado</button>
 </div>
 
+<!-- Ranking reposicionado debajo y centrado -->
 <div id="ranking">
-<h3>🏅 Ranking</h3>
+<h3><i class="fas fa-medal"></i> Ranking</h3>
 <ul id="listaRanking"></ul>
 </div>
 
-<button onclick="reiniciarJuego()">🔄 Reiniciar Juego</button>
-<button onclick="cambiarSesion(3)">⬅ Anterior</button>
-<button onclick="cambiarSesion(1)">🏠 Ir al Inicio</button>
+<button onclick="reiniciarJuego()"><i class="fas fa-redo-alt"></i> Reiniciar Juego</button>
+<button onclick="cambiarSesion(3)"><i class="fas fa-arrow-left"></i> Anterior</button>
+<button onclick="cambiarSesion(1)"><i class="fas fa-home"></i> Ir al Inicio</button>
 </div>
 
 </div>
@@ -210,6 +600,23 @@ Por ejemplo: 5!
 </audio>
 
 <script>
+// Crear partículas flotantes
+function createParticles() {
+  const particlesContainer = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    const size = Math.random() * 20 + 5;
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 5 + 's';
+    particle.style.animationDuration = Math.random() * 5 + 8 + 's';
+    particle.style.background = `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.3)`;
+    particlesContainer.appendChild(particle);
+  }
+}
+
 let puntos=0;
 let total=12;
 let intervalo;
@@ -330,8 +737,8 @@ function mostrarRanking(){
 let lista=document.getElementById("listaRanking");
 lista.innerHTML="";
 let ranking=JSON.parse(localStorage.getItem("ranking"))||[];
-ranking.slice(0,5).forEach(r=>{
-lista.innerHTML+=`<li>${r.nombre} - ${r.puntos} puntos</li>`;
+ranking.slice(0,5).forEach((r, index)=>{
+lista.innerHTML+=`<li style="animation-delay: ${index * 0.1}s">${index + 1}. ${r.nombre} - ${r.puntos} puntos</li>`;
 });
 }
 
@@ -347,7 +754,7 @@ document.getElementById("m"+i).innerHTML = "";
 });
 }
 
-// Función PDF bonito
+// Función PDF con escudo de la UdeA
 function descargarCertificadoPDF(){
     const { jsPDF } = window.jspdf;
 
@@ -374,33 +781,38 @@ function descargarCertificadoPDF(){
     doc.setLineWidth(4);
     doc.rect(20, 20, 760, 560);
 
+    // Agregar escudo de la UdeA al certificado
+    doc.addImage('https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Escudo-UdeA.svg/500px-Escudo-UdeA.svg.png', 'PNG', 350, 30, 100, 100);
+
     // Título
     doc.setFont("helvetica", "bold");
     doc.setFontSize(36);
     doc.setTextColor(60, 60, 60);
-    doc.text("CERTIFICADO DE LOGRO", 400, 100, {align: "center"});
+    doc.text("CERTIFICADO DE LOGRO", 400, 150, {align: "center"});
 
     // Nombre
     doc.setFont("helvetica", "normal");
     doc.setFontSize(28);
-    doc.text(`Nombre: ${nombre}`, 400, 180, {align: "center"});
+    doc.text(`Nombre: ${nombre}`, 400, 230, {align: "center"});
 
     // Puntaje y nivel
-    doc.text(`Puntaje: ${puntaje} de ${totalPreguntas}`, 400, 230, {align: "center"});
-    doc.text(`Nivel alcanzado: ${nivel}`, 400, 280, {align: "center"});
-    doc.text(`Fecha: ${fecha}`, 400, 330, {align: "center"});
+    doc.text(`Puntaje: ${puntaje} de ${totalPreguntas}`, 400, 280, {align: "center"});
+    doc.text(`Nivel alcanzado: ${nivel}`, 400, 330, {align: "center"});
+    doc.text(`Fecha: ${fecha}`, 400, 380, {align: "center"});
 
     // Mensaje final
     doc.setFontSize(22);
     doc.setTextColor(80, 80, 80);
-    doc.text("¡Felicitaciones por completar el juego del Factorial!", 400, 400, {align: "center"});
+    doc.text("¡Felicitaciones por completar el juego del Factorial!", 400, 450, {align: "center"});
 
     // Guardar PDF
-    doc.save("Certificado_Factorial.pdf");
+    doc.save("Certificado_Factorial_UdeA.pdf");
 }
 
+// Inicializar
 cargarEjercicios();
 mostrarRanking();
+createParticles();
 
 </script>
 
